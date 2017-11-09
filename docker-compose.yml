@@ -42,8 +42,8 @@ services:
     container_name: redis-socketio
 
   frappe:
-    volumes:
-      - ./sites:/home/frappe/frappe-bench/sites
+    # volumes:
+    #  - ./sites:/home/frappe/frappe-bench/sites
     build: .
     ports:
       - "8000:8000" #webserver_port

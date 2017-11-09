@@ -30,13 +30,16 @@ RUN printf '# User rules for frappe\nfrappe ALL=(ALL) NOPASSWD:ALL' >> /etc/sudo
 WORKDIR /home/frappe
 RUN git clone -b develop https://github.com/frappe/bench.git bench-repo
 RUN pip install -e bench-repo
+
+ADD frappe-bench /home/frappe/
 RUN chown -R frappe:frappe /home/frappe/*
 
 USER frappe
-ADD frappe-bench /home/frappe/
 RUN bench init frappe-bench --skip-bench-mkdir --skip-redis-config-generation
-RUN bench set-mariadb-host mariadb
-RUN bench get-app bench_manager https://github.com/frappe/bench_manager
-RUN bench get-app erpnext https://github.com/frappe/erpnext
 
 WORKDIR /home/frappe/frappe-bench
+RUN bench get-app bench_manager https://github.com/frappe/bench_manager
+RUN bench get-app erpnext https://github.com/frappe/erpnext
+RUN bench set-mariadb-host mariadb
+
+
