@@ -22,24 +22,31 @@ RUN pip install --upgrade setuptools pip
 RUN curl https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.7.0-1nodesource1~xenial1_amd64.deb > node.deb \
  && dpkg -i node.deb \
  && rm node.deb
- 
-# User setup
-RUN useradd -ms /bin/bash frappe && usermod -aG sudo frappe
-RUN printf '# User rules for frappe\nfrappe ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/frappe
 
-WORKDIR /home/frappe
+# User setup
+RUN useradd -ms /bin/bash -d /app frappe && usermod -aG sudo frappe
+
+WORKDIR /app
 RUN git clone -b develop https://github.com/frappe/bench.git bench-repo
 RUN pip install -e bench-repo
 
-ADD frappe-bench /home/frappe/
-RUN chown -R frappe:frappe /home/frappe/*
+# User rules for frappe
+RUN printf 'frappe ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/frappe
+
+ADD ./app/ /app/
+RUN chown -R frappe:frappe /app && chmod +x /app/x-*
 
 USER frappe
 RUN bench init frappe-bench --skip-bench-mkdir --skip-redis-config-generation
 
-WORKDIR /home/frappe/frappe-bench
+WORKDIR /app/frappe-bench
 RUN bench get-app bench_manager https://github.com/frappe/bench_manager
 RUN bench get-app erpnext https://github.com/frappe/erpnext
 RUN bench set-mariadb-host mariadb
-
+RUN sudo apt-get install -y nginx
+RUN bench setup supervisor --user frappe --yes && \
+    sudo ln -sf /app/frappe-bench/config/supervisor.conf /etc/supervisor/conf.d/frappe-bench.conf && \
+    sudo ln -sf /app/frappe-bench/nginx.supervisor.conf /etc/supervisor/conf.d/frappe-nginx.conf 
+ENTRYPOINT ["/app/x-entry"]
+CMD ["/app/x-cmd"]
 

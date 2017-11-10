@@ -18,3 +18,6 @@ init: create-site install-app
 
 start:
 	$(DOCKER_EXEC) "bench start"
+	
+bash:
+	$(DOCKER_EXEC) "bash"

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [[ -z "$SITE_NAME" ]] || [[ -z "$SITE_PORT" ]]
+then
+    echo "SITE_NAME is not defined" && exit 1
+fi
+
+bench new-site $SITE_NAME
+bench --site $SITE_NAME install-app bench_manager
+bench --site $SITE_NAME install-app erpnext
+bench setup set-nginx-port $SITE_NAME $SITE_PORT
+bench setup nginx --yes

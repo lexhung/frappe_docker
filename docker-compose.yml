@@ -3,7 +3,7 @@ services:
   mariadb:
     image: "mariadb"
     environment:
-      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_ROOT_PASSWORD=jidahsdiasdfeweuiuanzxicvbdfias
       - MYSQL_USER=root
     volumes:
       - ./conf/mariadb-conf.d:/etc/mysql/conf.d
@@ -51,6 +51,12 @@ services:
       - "6787:6787" #file_watcher_port
     stdin_open: true
     tty: true
+    environment:
+      - REDIS_CACHE=redis://redis-cache:13000
+      - REDIS_QUEUE=redis://redis-queue:11000
+      - REDIS_SOCKETIO=redis://redis-queue:12000
+      - MARIADB_HOST=mariadb
+      - ROOT_PASSWORD=jidahsdiasdfeweuiuanzxicvbdfias
     links:
       - redis-cache
       - redis-queue
