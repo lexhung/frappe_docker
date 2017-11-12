@@ -1,10 +1,9 @@
-#bench Dockerfile
-
 FROM ubuntu:16.04
 MAINTAINER Vishal Seshagiri
+MAINTAINER Hung X. Le (lexhung@gmail.com)
 
 USER root
-RUN apt-get update && apt-get upgrade -y && echo 'UPDATED'
+RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y iputils-ping \
     git build-essential python-setuptools python-dev libffi-dev libssl-dev \
     redis-tools software-properties-common libxrender1 libxext6 xfonts-75dpi xfonts-base \
@@ -42,11 +41,19 @@ RUN bench init frappe-bench --skip-bench-mkdir --skip-redis-config-generation
 WORKDIR /app/frappe-bench
 RUN bench get-app bench_manager https://github.com/frappe/bench_manager
 RUN bench get-app erpnext https://github.com/frappe/erpnext
-RUN bench set-mariadb-host mariadb
-RUN sudo apt-get install -y nginx
+RUN sudo apt-get install -y nginx supervisor
 RUN bench setup supervisor --user frappe --yes && \
-    sudo ln -sf /app/frappe-bench/config/supervisor.conf /etc/supervisor/conf.d/frappe-bench.conf && \
-    sudo ln -sf /app/frappe-bench/nginx.supervisor.conf /etc/supervisor/conf.d/frappe-nginx.conf 
+    cat /app/frappe-bench/config/supervisor.conf
+
+RUN sudo ln -sf /app/cfg/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf && \
+    sudo ln -sf /app/cfg/nginx.conf /etc/nginx/sites-enabled/frappe-sites.conf
+
+ENV REDIS_CACHE=redis://redis-cache:13000
+ENV REDIS_QUEUE=redis://redis-queue:11000
+ENV REDIS_SOCKETIO=redis://redis-socketio:12000
+ENV MARIADB_HOST=mariadb
+
+RUN /app/x-init
+
 ENTRYPOINT ["/app/x-entry"]
 CMD ["/app/x-cmd"]
-

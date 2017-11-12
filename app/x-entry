@@ -6,5 +6,5 @@ then
     exit 1
 fi
 
-source /home/frappe/frappe-bench/x-init
+source /app/x-init
 exec "$@"

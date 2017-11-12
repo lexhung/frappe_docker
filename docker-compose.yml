@@ -49,14 +49,14 @@ services:
       - "8000:8000" #webserver_port
       - "9000:9000" #socketio_port
       - "6787:6787" #file_watcher_port
+    command: ['sudo', 'supervisord', '--nodaemon', '-c', '/etc/supervisor/supervisord.conf']
     stdin_open: true
     tty: true
     environment:
-      - REDIS_CACHE=redis://redis-cache:13000
-      - REDIS_QUEUE=redis://redis-queue:11000
-      - REDIS_SOCKETIO=redis://redis-queue:12000
-      - MARIADB_HOST=mariadb
-      - ROOT_PASSWORD=jidahsdiasdfeweuiuanzxicvbdfias
+      - ROOT_PASSWD=jidahsdiasdfeweuiuanzxicvbdfias
+      - SITE_NAME=hq.kho-gom.com
+      - SITE_PORT=80
+
     links:
       - redis-cache
       - redis-queue

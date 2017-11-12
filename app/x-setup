@@ -5,6 +5,8 @@ then
     echo "SITE_NAME is not defined" && exit 1
 fi
 
+cd /app/frappe-bench
+
 bench new-site $SITE_NAME
 bench --site $SITE_NAME install-app bench_manager
 bench --site $SITE_NAME install-app erpnext
