@@ -4,8 +4,6 @@ rsync -av --ignore-existing /app/frappe-overlay/ /app/frappe-volume/
 ln -sfn /app/frappe-volume/config /app/frappe-bench/config
 ln -sfn /app/frappe-volume/sites /app/frappe-bench/sites
 ln -sfn /app/frappe-volume/logs /app/frappe-bench/logs
-ln -sf /app/frappe-bench/config/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf
-ln -sf /app/frappe-bench/config/nginx.conf /etc/nginx/sites-enabled/frappe-sites.conf
 
 [[ ! -z "$REDIS_CACHE" ]] && bench config set-common-config -c "redis_cache" "$REDIS_CACHE" && echo Set config REDIS_CACHE
 [[ ! -z "$REDIS_QUEUE" ]] && bench config set-common-config -c "redis_queue" "$REDIS_QUEUE" && echo Set config REDIS_QUEUE
