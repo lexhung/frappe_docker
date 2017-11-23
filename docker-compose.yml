@@ -4,7 +4,6 @@ services:
     image: "mariadb"
     environment:
       - MYSQL_ROOT_PASSWORD=jidahsdiasdfeweuiuanzxicvbdfias
-      - MYSQL_USER=root
     volumes:
       - ./conf/mariadb-conf.d:/etc/mysql/conf.d
     ports:
@@ -13,39 +12,33 @@ services:
 
   redis-cache:
     image: redis:alpine
-
     volumes:
       - ./redis-conf/redis_cache.conf:/etc/conf.d/redis.conf
 
     command: ["redis-server","/etc/conf.d/redis.conf"]
-
     container_name: redis-cache
 
   redis-queue:
     image: redis:alpine
-
     volumes:
       - ./redis-conf/redis_queue.conf:/etc/conf.d/redis.conf
 
     command: ["redis-server","/etc/conf.d/redis.conf"]
-
     container_name: redis-queue
 
   redis-socketio:
     image: redis:alpine
-
     volumes:
       - ./redis-conf/redis_socketio.conf:/etc/conf.d/redis.conf
-
     command: ["redis-server","/etc/conf.d/redis.conf"]
-
     container_name: redis-socketio
 
   frappe:
-    # volumes:
-    #  - ./sites:/home/frappe/frappe-bench/sites
+    volumes:
+    - ./data:/app/frappe-volume
     build: .
     ports:
+      - "8081:80" #webserver_port
       - "8000:8000" #webserver_port
       - "9000:9000" #socketio_port
       - "6787:6787" #file_watcher_port

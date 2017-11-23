@@ -2,9 +2,9 @@
 
 if [[ -z "$SITE_NAME" ]] || [[ -z "$SITE_PORT" ]]
 then
-    echo "SITE_NAME is not defined"
-    exit 1
+    echo "SITE_NAME & SITE_PORT is not defined" && exit 1
 fi
 
+source /app/x-setup
 source /app/x-init
 exec "$@"

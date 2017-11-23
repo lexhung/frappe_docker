@@ -1,14 +1,14 @@
 #!/bin/bash
 
-if [[ -z "$SITE_NAME" ]] || [[ -z "$SITE_PORT" ]]
-then
-    echo "SITE_NAME is not defined" && exit 1
-fi
+rsync -av --ignore-existing /app/frappe-overlay/ /app/frappe-volume/
+ln -sfn /app/frappe-volume/config /app/frappe-bench/config
+ln -sfn /app/frappe-volume/sites /app/frappe-bench/sites
+ln -sfn /app/frappe-volume/logs /app/frappe-bench/logs
+ln -sf /app/frappe-bench/config/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf
+ln -sf /app/frappe-bench/config/nginx.conf /etc/nginx/sites-enabled/frappe-sites.conf
 
-cd /app/frappe-bench
-
-bench new-site $SITE_NAME
-bench --site $SITE_NAME install-app bench_manager
-bench --site $SITE_NAME install-app erpnext
-bench setup set-nginx-port $SITE_NAME $SITE_PORT
-bench setup nginx --yes
+[[ ! -z "$REDIS_CACHE" ]] && bench config set-common-config -c "redis_cache" "$REDIS_CACHE" && echo Set config REDIS_CACHE
+[[ ! -z "$REDIS_QUEUE" ]] && bench config set-common-config -c "redis_queue" "$REDIS_QUEUE" && echo Set config REDIS_QUEUE
+[[ ! -z "$REDIS_SOCKETIO" ]] && bench config set-common-config -c "redis_socketio" "$REDIS_SOCKETIO" && echo Set config REDIS_SOCKETIO
+[[ ! -z "$ROOT_PASSWD" ]] && bench config set-common-config -c "root_password" "$ROOT_PASSWD" && echo Set config ROOT_PASSWD
+[[ ! -z "$MARIADB_HOST" ]] && bench set-mariadb-host $MARIADB_HOST && echo Set config MARIADB_HOST

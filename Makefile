@@ -1,10 +1,11 @@
-DOCKER_EXEC:=docker exec -it frappe bash -c
+APP_NAME:=frappe
+DOCKER_EXEC:=docker exec -it $(APP_NAME) bash -c
 SITE_NAME:=bench-manager.local
 
-create-site:	
+create-site:
 	$(DOCKER_EXEC) "bench new-site $(SITE_NAME)"
 
-create-site-force:	
+create-site-force:
 	$(DOCKER_EXEC) "bench new-site $(SITE_NAME) --force"
 
 install-app:
@@ -18,6 +19,9 @@ init: create-site install-app
 
 start:
 	$(DOCKER_EXEC) "bench start"
-	
+
 bash:
-	$(DOCKER_EXEC) "bash"
+	docker exec -it $(APP_NAME) bash
+
+up:
+	docker-compose up -d
