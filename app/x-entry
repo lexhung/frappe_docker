@@ -5,7 +5,7 @@ then
     echo "SITE_NAME & SITE_PORT is not defined" && exit 1
 fi
 
-/app/x-setup
-/app/x-init
+/app/x-init-bench
+/app/x-init-site
 
 exec "$@"

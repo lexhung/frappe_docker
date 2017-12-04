@@ -33,30 +33,13 @@ RUN pip install -e bench-repo
 RUN printf 'frappe ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/frappe
 
 ADD ./app/ /app/
-RUN chown -R frappe:frappe /app && chmod +x /app/x-* &&\
- ln -sfn /app/frappe-bench/apps /app/frappe-overlay/apps &&\
- ln -sfn /app/frappe-bench/env /app/frappe-overlay/env &&\
- ln -sfn /app/frappe-bench/node_modules /app/frappe-overlay/node_modules &&\
- ln -sfn /app/frappe-overlay/config /app/frappe-bench/config &&\
- ln -sfn /app/frappe-overlay/sites /app/frappe-bench/sites &&\
- ln -sf /app/frappe-bench/config/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf &&\
- ln -sf /app/frappe-bench/config/nginx.conf /etc/nginx/sites-enabled/frappe-sites.conf
-
-USER frappe
-RUN bench init frappe-bench --skip-bench-mkdir --skip-redis-config-generation
-
-WORKDIR /app/frappe-bench
-RUN bench get-app bench_manager https://github.com/frappe/bench_manager
-RUN bench get-app erpnext https://github.com/frappe/erpnext
-RUN bench setup supervisor --user frappe --yes && \
-    cat /app/frappe-bench/config/supervisor.conf
+RUN chown -R frappe:frappe /app && chmod +x /app/x-*
 
 ENV REDIS_CACHE=redis://redis-cache:13000
 ENV REDIS_QUEUE=redis://redis-queue:11000
 ENV REDIS_SOCKETIO=redis://redis-socketio:12000
 ENV MARIADB_HOST=mariadb
 
-RUN /app/x-setup
-
+USER frappe
 ENTRYPOINT ["/app/x-entry"]
 CMD ["/app/x-cmd"]
