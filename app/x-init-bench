@@ -6,7 +6,8 @@ if [ -f $BENCH_LOCK  ]; then
     echo "Site ${BENCH_LOCK} is already setup!"
 else
     cd /app
-    rsync -av --ignore-existing /app/frappe-init/ /app/frappe-bench/
+    sudo rsync -av --ignore-existing /app/frappe-init/ /app/frappe-bench/
+    sudo chown -R frappe:frappe /app/frappe-bench/
     bench init frappe-bench --skip-bench-mkdir --skip-redis-config-generation
 
     cd /app/frappe-bench
