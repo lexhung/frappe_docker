@@ -1,11 +1,16 @@
-version: '2'
+version: '3'
+volumes:
+  frappe_mariadb_data:
+  frappe_erpnext_data:
 services:
   mariadb:
     image: "mariadb"
     environment:
       - MYSQL_ROOT_PASSWORD=jidahsdiasdfeweuiuanzxicvbdfias
+      - MYSQL_ROOT_HOST=%
     volumes:
       - ./conf/mariadb:/etc/mysql/conf.d
+      - frappe_mariadb_data:/var/lib/mysql
     ports:
       - "3307:3307" #mariadb-port
     container_name: mariadb
@@ -35,8 +40,8 @@ services:
 
   frappe:
     volumes:
-    - ./bench:/app/frappe-bench
-    build: .
+    - frappe_erpnext_data:/app/frappe-bench
+    build: ./image
     ports:
       - "8081:80" #webserver_port
       - "8000:8000" #webserver_port
@@ -49,7 +54,6 @@ services:
       - ROOT_PASSWD=jidahsdiasdfeweuiuanzxicvbdfias
       - SITE_NAME=hq.kho-gom.com
       - SITE_PORT=80
-
     links:
       - redis-cache
       - redis-queue

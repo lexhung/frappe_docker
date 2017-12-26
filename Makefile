@@ -29,6 +29,17 @@ up:
 build:
 	docker-compose build frappe
 
+destroy-containers:
+	docker-compose stop
+	docker-compose rm
+
+
+destroy-data:
+	docker volume rm frappedocker_frappe_erpnext_data
+	docker volume rm frappedocker_frappe_mariadb_data
+
+destroy: destroy-containers destroy-data 
+
 clean-docker:
 	docker rm $$(docker ps -a -q)
 	docker rmi $$(docker images | grep "^<none>" | awk "{print $$3}")
