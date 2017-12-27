@@ -5,7 +5,7 @@ then
     echo "SITE_NAME & SITE_PORT is not defined" && exit 1
 fi
 
-cd /frappe-bench
+cd /app/frappe-bench
 [[ ! -z "$REDIS_CACHE"    ]] && bench config set-common-config -c "redis_cache" "$REDIS_CACHE" && echo Set config REDIS_CACHE
 [[ ! -z "$REDIS_QUEUE"    ]] && bench config set-common-config -c "redis_queue" "$REDIS_QUEUE" && echo Set config REDIS_QUEUE
 [[ ! -z "$REDIS_SOCKETIO" ]] && bench config set-common-config -c "redis_socketio" "$REDIS_SOCKETIO" && echo Set config REDIS_SOCKETIO

@@ -38,19 +38,20 @@ ENV REDIS_SOCKETIO=redis://redis-socketio:12000
 ENV MARIADB_HOST=mariadb
 
 USER frappe
-ADD ./frappe-bench/ /frappe-bench/
-RUN sudo chown -R frappe:frappe /frappe-bench &&\
-    cd / &&\
+ADD ./app/frappe-bench/ /app/frappe-bench/
+RUN sudo chown -R frappe:frappe /app/frappe-bench &&\
+    cd /app &&\
     bench init frappe-bench --skip-bench-mkdir --skip-redis-config-generation
-RUN cd /frappe-bench &&\
+RUN cd /app/frappe-bench &&\
     bench get-app bench_manager https://github.com/frappe/bench_manager &&\
     bench get-app erpnext https://github.com/frappe/erpnext
 
-ADD ./app/ /app/
-RUN sudo chown -R frappe:frappe /app && chmod +x /app/x-*
+ADD ./app/config/ /app/config/
+ADD ./app/script/ /app/script/
+RUN sudo chown -R frappe:frappe /app && chmod +x /app/script/x-*
 
 VOLUME /app/logs
-VOLUME /frappe-bench/sites
+VOLUME /app/frappe-bench/sites
 
-ENTRYPOINT ["/app/x-entry"]
-CMD ["/app/x-cmd"]
+ENTRYPOINT ["/app/script/x-entry"]
+CMD ["/app/script/x-cmd"]

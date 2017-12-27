@@ -4,8 +4,8 @@ then
     echo "SITE_NAME & SITE_PORT is not defined" && exit 1
 fi
 
-SITE_LOCK=/frappe-bench/sites/.site_$SITE_NAME
-PORT_LOCK=/frappe-bench/sites/.port_$PORT_NAME
+SITE_LOCK=/app/frappe-bench/sites/.site_$SITE_NAME
+PORT_LOCK=/app/frappe-bench/sites/.port_$PORT_NAME
 
 if [[ -f $SITE_LOCK  ]]; then
     echo "Site ${SITE_NAME} is already setup!" && exit 1
@@ -15,11 +15,14 @@ if [[ -f $PORT_LOCK ]]; then
     echo "Port ${SITE_PORT} is already registered!" && exit 1
 fi
 
-cd /frappe-bench
+cd /app/frappe-bench
 
 bench new-site $SITE_NAME
 bench --site $SITE_NAME install-app bench_manager
 bench --site $SITE_NAME install-app erpnext
+
+sudo ln -sf /app/config/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf
+sudo ln -sf /app/config/nginx.conf /etc/nginx/sites-enabled/frappe-sites.conf
 
 date > $SITE_LOCK
 date > $PORT_LOCK
