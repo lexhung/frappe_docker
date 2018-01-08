@@ -29,6 +29,10 @@ up:
 build:
 	docker-compose build frappe
 
+clean-docker:
+	docker rm $$(docker ps -a -q)
+	docker rmi $$(docker images | grep "^<none>" | awk "{print $$3}")
+
 destroy-containers:
 	docker-compose stop
 	docker-compose rm
@@ -40,6 +44,5 @@ destroy-data:
 
 destroy: destroy-containers destroy-data 
 
-clean-docker:
-	docker rm $$(docker ps -a -q)
-	docker rmi $$(docker images | grep "^<none>" | awk "{print $$3}")
+break-in:
+	docker-compose exec frappe /bin/bash	

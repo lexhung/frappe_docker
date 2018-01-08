@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sudo supervisord --nodaemon -c /etc/supervisor/supervisord.conf
