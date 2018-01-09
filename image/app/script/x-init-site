@@ -21,8 +21,5 @@ bench new-site $SITE_NAME
 bench --site $SITE_NAME install-app bench_manager
 bench --site $SITE_NAME install-app erpnext
 
-sudo ln -sf /app/config/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf
-sudo ln -sf /app/config/nginx.conf /etc/nginx/sites-enabled/frappe-sites.conf
-
 date > $SITE_LOCK
 date > $PORT_LOCK

@@ -48,7 +48,9 @@ RUN cd /app/frappe-bench &&\
 
 ADD ./app/config/ /app/config/
 ADD ./app/script/ /app/script/
-RUN sudo chown -R frappe:frappe /app && chmod +x /app/script/x-*
+RUN sudo chown -R frappe:frappe /app && chmod +x /app/script/x-* &&\
+ sudo ln -sf /app/config/nginx.conf /etc/nginx/sites-enabled/default &&\
+ sudo ln -sf /app/config/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf
 
 VOLUME /app/logs
 VOLUME /app/frappe-bench/sites

@@ -12,7 +12,4 @@ cd /app/frappe-bench
 [[ ! -z "$ROOT_PASSWD"    ]] && bench config set-common-config -c "root_password" "$ROOT_PASSWD" && echo Set config ROOT_PASSWD
 [[ ! -z "$MARIADB_HOST"   ]] && bench set-mariadb-host $MARIADB_HOST && echo Set config MARIADB_HOST
 
-sudo ln -sf /app/config/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf
-sudo ln -sf /app/config/nginx.conf /etc/nginx/sites-enabled/frappe-sites.conf
-
 exec "$@"
