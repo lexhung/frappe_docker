@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.6.0 (e4adfef)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: frappe
+  name: frappe
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: frappe
+    spec:
+      containers:
+      - args:
+        - sudo
+        - supervisord
+        - --nodaemon
+        - -c
+        - /etc/supervisor/supervisord.conf
+        env:
+        - name: ROOT_PASSWD
+          value: jidahsdiasdfeweuiuanzxicvbdfias
+        - name: SITE_NAME
+          value: hq.kho-gom.com
+        - name: SITE_PORT
+          value: "80"
+        image: frappe
+        name: frappe
+        ports:
+        - containerPort: 80
+        - containerPort: 8000
+        - containerPort: 9000
+        - containerPort: 6787
+        resources: {}
+        stdin: true
+        tty: true
+        volumeMounts:
+        - mountPath: /app/frappe-bench
+          name: frappe-erpnext-data
+      restartPolicy: Always
+      volumes:
+      - name: frappe-erpnext-data
+        persistentVolumeClaim:
+          claimName: frappe-erpnext-data
+status: {}

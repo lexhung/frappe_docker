@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.6.0 (e4adfef)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mariadb
+  name: mariadb
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: mariadb
+    spec:
+      containers:
+      - env:
+        - name: MYSQL_ROOT_HOST
+          value: '%'
+        - name: MYSQL_ROOT_PASSWORD
+          value: jidahsdiasdfeweuiuanzxicvbdfias
+        image: mariadb
+        name: mariadb
+        ports:
+        - containerPort: 3307
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/mysql/conf.d
+          name: mariadb-claim0
+        - mountPath: /var/lib/mysql
+          name: frappe-mariadb-data
+      restartPolicy: Always
+      volumes:
+      - name: mariadb-claim0
+        persistentVolumeClaim:
+          claimName: mariadb-claim0
+      - name: frappe-mariadb-data
+        persistentVolumeClaim:
+          claimName: frappe-mariadb-data
+status: {}

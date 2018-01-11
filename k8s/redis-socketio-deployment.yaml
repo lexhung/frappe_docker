@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.6.0 (e4adfef)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: redis-socketio
+  name: redis-socketio
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: redis-socketio
+    spec:
+      containers:
+      - args:
+        - redis-server
+        - /etc/conf.d/redis.conf
+        image: redis:alpine
+        name: redis-socketio
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/conf.d/redis.conf
+          name: redis-socketio-claim0
+      restartPolicy: Always
+      volumes:
+      - name: redis-socketio-claim0
+        persistentVolumeClaim:
+          claimName: redis-socketio-claim0
+status: {}
