@@ -11,7 +11,7 @@ RUN apt-get install -y iputils-ping \
     apt-transport-https libsasl2-dev libldap2-dev libtiff5-dev tcl8.6-dev tk8.6-dev \
     wget curl rlwrap redis-tools nano \
     libmysqlclient-dev mariadb-client mariadb-common \
-    wkhtmltopdf python-mysqldb vim sudo nginx supervisor mariadb redis
+    wkhtmltopdf python-mysqldb vim sudo nginx supervisor mariadb-server redis-server
 
 # Install python-pip
 RUN wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
@@ -32,9 +32,9 @@ RUN pip install -e bench-repo
 # User rules for frappe
 RUN printf 'frappe ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/frappe
 
-ENV REDIS_CACHE=redis://redis-cache:13000
-ENV REDIS_QUEUE=redis://redis-queue:11000
-ENV REDIS_SOCKETIO=redis://redis-socketio:12000
+ENV REDIS_CACHE=redis://localhost:13000
+ENV REDIS_QUEUE=redis://localhost:11000
+ENV REDIS_SOCKETIO=redis://localhost:12000
 ENV MARIADB_HOST=mariadb
 
 USER frappe
