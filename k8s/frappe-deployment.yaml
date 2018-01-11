@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   annotations:
     kompose.cmd: kompose convert
-    kompose.version: 1.6.0 (e4adfef)
+    kompose.version: 1.7.0 ()
   creationTimestamp: null
   labels:
     io.kompose.service: frappe
@@ -40,8 +40,6 @@ spec:
         - containerPort: 9000
         - containerPort: 6787
         resources: {}
-        stdin: true
-        tty: true
         volumeMounts:
         - mountPath: /app/frappe-bench
           name: frappe-erpnext-data

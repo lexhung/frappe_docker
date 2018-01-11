@@ -3,15 +3,14 @@ kind: Deployment
 metadata:
   annotations:
     kompose.cmd: kompose convert
-    kompose.version: 1.6.0 (e4adfef)
+    kompose.version: 1.7.0 ()
   creationTimestamp: null
   labels:
     io.kompose.service: redis-queue
   name: redis-queue
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -19,18 +18,10 @@ spec:
         io.kompose.service: redis-queue
     spec:
       containers:
-      - args:
-        - redis-server
-        - /etc/conf.d/redis.conf
-        image: redis:alpine
+      - image: redis:alpine
         name: redis-queue
+        ports:
+        - containerPort: 6379
         resources: {}
-        volumeMounts:
-        - mountPath: /etc/conf.d/redis.conf
-          name: redis-queue-claim0
       restartPolicy: Always
-      volumes:
-      - name: redis-queue-claim0
-        persistentVolumeClaim:
-          claimName: redis-queue-claim0
 status: {}

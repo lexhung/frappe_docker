@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   annotations:
     kompose.cmd: kompose convert
-    kompose.version: 1.6.0 (e4adfef)
+    kompose.version: 1.7.0 ()
   creationTimestamp: null
   labels:
     io.kompose.service: mariadb
@@ -30,15 +30,10 @@ spec:
         - containerPort: 3307
         resources: {}
         volumeMounts:
-        - mountPath: /etc/mysql/conf.d
-          name: mariadb-claim0
         - mountPath: /var/lib/mysql
           name: frappe-mariadb-data
       restartPolicy: Always
       volumes:
-      - name: mariadb-claim0
-        persistentVolumeClaim:
-          claimName: mariadb-claim0
       - name: frappe-mariadb-data
         persistentVolumeClaim:
           claimName: frappe-mariadb-data

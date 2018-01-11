@@ -3,7 +3,7 @@ kind: Service
 metadata:
   annotations:
     kompose.cmd: kompose convert
-    kompose.version: 1.6.0 (e4adfef)
+    kompose.version: 1.7.0 ()
   creationTimestamp: null
   labels:
     io.kompose.service: frappe

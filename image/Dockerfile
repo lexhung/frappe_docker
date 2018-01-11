@@ -11,7 +11,7 @@ RUN apt-get install -y iputils-ping \
     apt-transport-https libsasl2-dev libldap2-dev libtiff5-dev tcl8.6-dev tk8.6-dev \
     wget curl rlwrap redis-tools nano \
     libmysqlclient-dev mariadb-client mariadb-common \
-    wkhtmltopdf python-mysqldb vim sudo nginx supervisor
+    wkhtmltopdf python-mysqldb vim sudo nginx supervisor mariadb redis
 
 # Install python-pip
 RUN wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
@@ -47,13 +47,13 @@ RUN cd /app/frappe-bench &&\
     bench get-app erpnext https://github.com/frappe/erpnext
 
 ADD ./app/config/ /app/config/
-ADD ./app/script/ /app/script/
-RUN sudo chown -R frappe:frappe /app && chmod +x /app/script/x-* &&\
+ADD ./app/bin/ /app/bin/
+RUN sudo chown -R frappe:frappe /app && chmod +x /app/bin/x-* &&\
  sudo ln -sf /app/config/nginx.conf /etc/nginx/sites-enabled/default &&\
  sudo ln -sf /app/config/supervisord.conf /etc/supervisor/conf.d/frappe-bench.conf
 
 VOLUME /app/logs
 VOLUME /app/frappe-bench/sites
 
-ENTRYPOINT ["/app/script/x-entry"]
-CMD ["/app/script/x-cmd"]
+ENTRYPOINT ["/app/bin/x-entry"]
+CMD ["/app/bin/x-cmd"]
