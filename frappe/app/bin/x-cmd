@@ -2,11 +2,8 @@
 
 SITE_LOCK=/opt/frappe-bench/sites/.site_$SITE_NAME
 
-if [[ -f $SITE_LOCK  ]]; then
-    sudo supervisord --nodaemon -c /etc/supervisor/supervisord.conf
-else
-    while true; do
-      echo 'Site is not initialized. Run /app/bin/x-init-site for initialization.' && sleep 30
-    done
-fi
+while [[ ! -f $SITE_LOCK  ]]; do
+      echo 'Site is not initialized. Run /app/bin/x-init-site for initialization. Wait 30s ...' && sleep 30
+done
 
+sudo supervisord --nodaemon -c /etc/supervisor/supervisord.conf

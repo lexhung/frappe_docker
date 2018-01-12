@@ -34,7 +34,7 @@ logs:
 	$(DCOMPOSE) logs -f frappe
 
 build:
-	$(DCOMPOSE) build frappe
+	$(DCOMPOSE) build frappe mariadb
 
 clean-docker:
 	docker rm $$(docker ps -a -q)

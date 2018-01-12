@@ -15,11 +15,9 @@ if [[ -f $PORT_LOCK ]]; then
     echo "Port ${SITE_PORT} is already registered!" && exit 1
 fi
 
-cd /opt/frappe-bench
-
-bench new-site $SITE_NAME
-bench --site $SITE_NAME install-app bench_manager
-bench --site $SITE_NAME install-app erpnext
-
-date > $SITE_LOCK
+cd /opt/frappe-bench && \
+bench new-site $SITE_NAME && \
+bench --site $SITE_NAME install-app bench_manager && \
+bench --site $SITE_NAME install-app erpnext && \
+date > $SITE_LOCK && \
 date > $PORT_LOCK
