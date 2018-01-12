@@ -5,7 +5,11 @@ then
     echo "SITE_NAME & SITE_PORT is not defined" && exit 1
 fi
 
-cd /app/frappe-bench
+sudo /app/bin/x-prepare-data
+
+sed -i "s/%%SITE_NAME%%/$SITE_NAME/g" /app/config/nginx.conf
+cd /opt/frappe-bench
+
 [[ ! -z "$REDIS_CACHE"    ]] && bench config set-common-config -c "redis_cache" "$REDIS_CACHE" && echo Set config REDIS_CACHE
 [[ ! -z "$REDIS_QUEUE"    ]] && bench config set-common-config -c "redis_queue" "$REDIS_QUEUE" && echo Set config REDIS_QUEUE
 [[ ! -z "$REDIS_SOCKETIO" ]] && bench config set-common-config -c "redis_socketio" "$REDIS_SOCKETIO" && echo Set config REDIS_SOCKETIO

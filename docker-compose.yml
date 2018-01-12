@@ -3,58 +3,35 @@ volumes:
   frappe_mariadb_data:
   frappe_erpnext_data:
 services:
-  # mariadb:
-  #   build: ./mariadb
-  #   environment:
-  #     - MYSQL_ROOT_PASSWORD=jidahsdiasdfeweuiuanzxicvbdfias
-  #     - MYSQL_ROOT_HOST=%
-  #   volumes:
-  #     - frappe_mariadb_data:/var/lib/mysql
-  #   ports:
-  #     - "3307:3307" #mariadb-port
-  #   container_name: mariadb
-
-  # redis-cache:
-  #   image: redis:alpine
-  #   volumes:
-  #     - ./redis/redis_cache.conf:/etc/conf.d/redis.conf
-  #   command: ["redis-server","/etc/conf.d/redis.conf"]
-  #   container_name: redis-cache
-
-  # redis-queue:
-  #   image: redis:alpine
-  #   volumes:
-  #     - ./redis/redis_queue.conf:/etc/conf.d/redis.conf
-  #   container_name: redis-queue
-
-  # redis-socketio:
-  #   image: redis:alpine
-  #   volumes:
-  #     - ./redis/redis_socketio.conf:/etc/conf.d/redis.conf
-  #   container_name: redis-socketio
+  mariadb:
+    build: ./mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=jidahsdiasdfeweuiuanzxicvbdfias
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - frappe_mariadb_data:/var/lib/mysql
+    ports:
+      - "3307:3307" #mariadb-port
+    container_name: mariadb
 
   frappe:
     volumes:
-    - frappe_erpnext_data:/app/frappe-bench
-    build: ./image
+    - frappe_erpnext_data:/app/data
+    build: ./frappe
     ports:
       - "8081:80" #webserver_port
       - "8000:8000" #webserver_port
       - "9000:9000" #socketio_port
       - "6787:6787" #file_watcher_port
-    command: ['sudo', 'supervisord', '--nodaemon', '-c', '/etc/supervisor/supervisord.conf']
+    # command: ['/app/bin/x-cmd']
     environment:
       - ROOT_PASSWD=jidahsdiasdfeweuiuanzxicvbdfias
-      - SITE_NAME=hq.kho-gom.com
+      - SITE_NAME=erp.abx-ltd.com
       - SITE_PORT=80
-    # links:
-    #   - redis-cache
-    #   - redis-queue
-    #   - redis-socketio
-    #   - mariadb
-    # depends_on:
-    #   - mariadb
-    #   - redis-cache
-    #   - redis-queue
-    #   - redis-socketio
+    tty: true
+    stdin_open: true
+    links:
+      - mariadb
+    depends_on:
+      - mariadb
     container_name: frappe
