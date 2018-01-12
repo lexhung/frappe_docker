@@ -1,8 +1,7 @@
 APP_NAME:=frappe
 DOCKER_EXEC:=docker exec -it $(APP_NAME) bash -c
 SITE_NAME:=bench-manager.local
-DOCKER_HOST:=/var/run/docker.sock
-DCOMPOSE=docker-compose -H $(DOCKER_HOST)
+DCOMPOSE=docker-compose
 
 create-site:
 	$(DOCKER_EXEC) "bench new-site $(SITE_NAME)"
