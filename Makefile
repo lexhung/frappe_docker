@@ -1,7 +1,10 @@
 APP_NAME:=frappe
-DOCKER_EXEC:=docker exec -it $(APP_NAME) bash -c
 SITE_NAME:=bench-manager.local
-DCOMPOSE=docker-compose
+DHOST_PARAM:=--host localhost:2379
+DCOMPOSE=docker-compose $(DHOST_PARAM)
+DOCKER_EXEC:=$(DOCKER) exec -it $(APP_NAME) bash -c
+DOCKER=docker $(DHOST_PARAM)
+NAMESPACE:=fiisoft
 
 create-site:
 	$(DOCKER_EXEC) "bench new-site $(SITE_NAME)"
@@ -25,20 +28,24 @@ run:
 	$(DCOMPOSE) run frappe /bin/bash
 
 bash:
-	docker exec -it $(APP_NAME) bash
+	$(DOCKER) exec -it $(APP_NAME) bash
 
 up:
 	$(DCOMPOSE) up -d
+
+stop:
+	$(DCOMPOSE) stop
 
 logs:
 	$(DCOMPOSE) logs -f frappe
 
 build:
-	$(DCOMPOSE) build frappe mariadb
+	$(DOCKER) build -t $(NAMESPACE)/frappe ./frappe
+	$(DOCKER) build -t $(NAMESPACE)/mariadb ./mariadb
 
 clean-docker:
-	docker rm $$(docker ps -a -q)
-	docker rmi $$(docker images | grep "^<none>" | awk "{print $$3}")
+	$(DOCKER) rm $$($(DOCKER) ps -a -q)
+	$(DOCKER) rmi $$($(DOCKER) images | grep "^<none>" | awk "{print $$3}")
 
 destroy-containers:
 	$(DCOMPOSE) stop
@@ -46,8 +53,8 @@ destroy-containers:
 
 
 destroy-data:
-	docker volume rm frappedocker_frappe_erpnext_data
-	docker volume rm frappedocker_frappe_mariadb_data
+	$(DOCKER) volume rm frappe_erpnext_data
+	$(DOCKER) volume rm frappe_mariadb_data
 
 destroy: destroy-containers destroy-data
 

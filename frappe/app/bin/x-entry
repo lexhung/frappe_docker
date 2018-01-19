@@ -5,7 +5,11 @@ then
     echo "SITE_NAME & SITE_PORT is not defined" && exit 1
 fi
 
-sudo /app/bin/x-prepare-data
+#!/bin/sh
+
+sudo mkdir -p /app/data/redis /app/data/logs
+sudo rsync -a --ignore-existing /opt/frappe-bench/sites.local/ /opt/frappe-bench/sites/
+sudo chown -R frappe:frappe /opt/frappe-bench/sites
 
 sed -i "s/%%SITE_NAME%%/$SITE_NAME/g" /app/config/nginx.conf
 cd /opt/frappe-bench

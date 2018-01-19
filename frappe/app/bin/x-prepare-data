@@ -1,7 +1,0 @@
-#!/bin/sh
-
-mkdir -p /app/data/redis /app/data/sites /app/data/logs
-rsync -a --ignore-existing /opt/frappe-bench/sites/ /app/data/sites/
-mv /opt/frappe-bench/sites /opt/frappe-bench/sites.local
-chown -R frappe:frappe /app/data/sites
-ln -sfn /app/data/sites /opt/frappe-bench/sites

@@ -30,7 +30,7 @@ RUN git clone -b develop https://github.com/frappe/bench.git bench-repo
 RUN pip install -e bench-repo
 
 # User rules for frappe
-RUN printf 'frappe ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers.d/frappe
+RUN printf 'frappe ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers.d/frappe
 
 ENV REDIS_CACHE=redis://localhost:13000
 ENV REDIS_QUEUE=redis://localhost:11000
@@ -43,15 +43,17 @@ RUN sudo chown -R frappe:frappe /opt/frappe-bench && \
     cd /opt && bench init frappe-bench --skip-bench-mkdir --skip-redis-config-generation
 RUN cd /opt/frappe-bench &&\
     bench get-app bench_manager https://github.com/frappe/bench_manager &&\
-    bench get-app erpnext https://github.com/frappe/erpnext
+    bench get-app --branch master erpnext https://github.com/frappe/erpnext
 
 ADD ./app/ /app/
 RUN sudo chown -R frappe:frappe /app && chmod +x /app/bin/x-* &&\
  sudo ln -sf /app/config/nginx.conf /etc/nginx/sites-enabled/default &&\
  sudo ln -sf /app/config/supervisord-application.conf /etc/supervisor/conf.d/application.conf &&\
- sudo ln -sf /app/config/supervisord-service.conf /etc/supervisor/conf.d/service.conf
+ sudo ln -sf /app/config/supervisord-service.conf /etc/supervisor/conf.d/service.conf &&\
+ sudo mv /opt/frappe-bench/sites /opt/frappe-bench/sites.local  &&\
+ sudo mkdir /opt/frappe-bench/sites
 
-VOLUME /app/data
+VOLUME /opt/frappe-bench/sites
 
 ENTRYPOINT ["/app/bin/x-entry"]
 CMD ["/app/bin/x-cmd"]
