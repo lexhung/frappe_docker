@@ -1,4 +1,4 @@
-version: '3'
+version: '3.6'
 volumes:
   frappe_mariadb_data:
     external:
@@ -17,23 +17,19 @@ services:
     ports:
       - "3307:3307" #mariadb-port
     container_name: mariadb
-
   frappe:
     volumes:
     - frappe_erpnext_data:/opt/frappe-bench/sites
     image: fiisoft/frappe
     ports:
-      - "80:80" #webserver_port
+      - "8080:80" #webserver_port
       - "8000:8000" #webserver_port
       - "9000:9000" #socketio_port
       - "6787:6787" #file_watcher_port
-    # command: ['/app/bin/x-cmd']
     environment:
       - ROOT_PASSWD=jidahsdiasdfeweuiuanzxicvbdfias
       - SITE_NAME=erp.abx-ltd.com
       - SITE_PORT=80
-    tty: true
-    stdin_open: true
     links:
       - mariadb
     depends_on:

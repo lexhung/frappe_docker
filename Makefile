@@ -1,9 +1,9 @@
 APP_NAME:=frappe
 SITE_NAME:=bench-manager.local
-DHOST_PARAM:=--host localhost:2379
-DCOMPOSE=docker-compose $(DHOST_PARAM)
+DOCKER_HOST_PARAM:=
+COMPOSE=docker-compose $(DOCKER_HOST_PARAM)
 DOCKER_EXEC:=$(DOCKER) exec -it $(APP_NAME) bash -c
-DOCKER=docker $(DHOST_PARAM)
+DOCKER=docker $(DOCKER_HOST_PARAM)
 NAMESPACE:=fiisoft
 
 create-site:
@@ -25,19 +25,19 @@ start:
 	$(DOCKER_EXEC) "bench start"
 
 run:
-	$(DCOMPOSE) run frappe /bin/bash
+	$(COMPOSE) run frappe /bin/bash
 
 bash:
 	$(DOCKER) exec -it $(APP_NAME) bash
 
 up:
-	$(DCOMPOSE) up -d
+	$(COMPOSE) up -d
 
 stop:
-	$(DCOMPOSE) stop
+	$(COMPOSE) stop
 
 logs:
-	$(DCOMPOSE) logs -f frappe
+	$(COMPOSE) logs -f frappe
 
 build:
 	$(DOCKER) build -t $(NAMESPACE)/frappe ./frappe
@@ -48,8 +48,8 @@ clean-docker:
 	$(DOCKER) rmi $$($(DOCKER) images | grep "^<none>" | awk "{print $$3}")
 
 destroy-containers:
-	$(DCOMPOSE) stop
-	$(DCOMPOSE) rm
+	$(COMPOSE) stop
+	$(COMPOSE) rm
 
 
 destroy-data:
@@ -59,4 +59,4 @@ destroy-data:
 destroy: destroy-containers destroy-data
 
 break-in:
-	$(DCOMPOSE) exec frappe /bin/bash
+	$(COMPOSE) exec frappe /bin/bash

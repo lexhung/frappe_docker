@@ -2,6 +2,13 @@ FROM ubuntu:16.04
 MAINTAINER Vishal Seshagiri
 MAINTAINER Hung X. Le (lexhung@gmail.com)
 
+ENV URL_NODEJS_DEB=https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.11.2-1nodesource1~xenial1_amd64.deb
+ENV URL_WKHTMLTOPDF_DEB=https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.xenial_amd64.deb
+ENV BRANCH_ERPNEXT=master
+ENV BRANCH_BENCH_MANAGER=develop
+ENV BRANCH_FRAPPE=master
+ENV BRANCH_BENCH=master
+
 USER root
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y iputils-ping \
@@ -18,15 +25,15 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py
 RUN pip install --upgrade setuptools pip mysql
 
 # Install nodejs
-RUN curl https://deb.nodesource.com/node_6.x/pool/main/n/nodejs/nodejs_6.7.0-1nodesource1~xenial1_amd64.deb > node.deb \
- && dpkg -i node.deb \
- && rm node.deb
+RUN curl -L $URL_NODEJS_DEB > node.deb
+RUN curl -L $URL_WKHTMLTOPDF_DEB > wkhtmltopdf.deb
+RUN dpkg -i *.deb && apt-get install -f && apt-get autoremove -y && rm *.deb
 
 # User setup
 RUN useradd -ms /bin/bash -d /opt/frappe-bench frappe && usermod -aG sudo frappe
 
 WORKDIR /app
-RUN git clone -b develop https://github.com/frappe/bench.git bench-repo
+RUN git clone -b $BRANCH_BENCH https://github.com/frappe/bench.git bench-repo
 RUN pip install -e bench-repo
 
 # User rules for frappe
@@ -40,10 +47,9 @@ ENV MARIADB_HOST=mariadb
 USER frappe
 ADD ./app/frappe-bench/ /opt/frappe-bench/
 RUN sudo chown -R frappe:frappe /opt/frappe-bench && \
-    cd /opt && bench init frappe-bench --skip-bench-mkdir --skip-redis-config-generation
-RUN cd /opt/frappe-bench &&\
-    bench get-app bench_manager https://github.com/frappe/bench_manager &&\
-    bench get-app --branch master erpnext https://github.com/frappe/erpnext
+    cd /opt && bench init --frappe-branch=$BRANCH_FRAPPE --ignore-exist --skip-redis-config-generation frappe-bench
+RUN cd /opt/frappe-bench && bench get-app --branch $BRANCH_BENCH_MANAGER bench_manager https://github.com/frappe/bench_manager
+RUN cd /opt/frappe-bench && bench get-app --branch $BRANCH_ERPNEXT erpnext https://github.com/frappe/erpnext
 
 ADD ./app/ /app/
 RUN sudo chown -R frappe:frappe /app && chmod +x /app/bin/x-* &&\
